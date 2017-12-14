@@ -1,9 +1,7 @@
 package sortomania.contestants;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import sortomania.Contestant;
 
@@ -12,9 +10,7 @@ public class BenjaminDardia extends Contestant
 
 	private final long BIG_NUM = (long) Math.pow(10, 10);
     private ArrayList<Double>[] buckets = getBuckets();
-    private final int CUTOFF =  15;   // cutoff to insertion sort
     private final int THRESHOLD = 16;
-    private final int RUN = 32;
 	
 	@Override
 	public Color getColor() 
@@ -139,7 +135,7 @@ public class BenjaminDardia extends Contestant
 	@Override
 	public int sortAndSearch(Comparable[] arr, Comparable toFind) 
 	{
-		introSort(arr);
+		patienceSort(arr);
 	return binarySearch(arr, toFind);
 	}
 	
@@ -551,4 +547,41 @@ public class BenjaminDardia extends Contestant
 	        }
 	    }
 	    
+	    public <E extends Comparable<? super E>> void patienceSort (E[] n)
+	    {
+	        List<Pile<E>> piles = new ArrayList<Pile<E>>();
+	        // sort into piles
+	        for (E x : n)
+	        {
+	            Pile<E> newPile = new Pile<E>();
+	            newPile.push(x);
+	            int i = Collections.binarySearch(piles, newPile);
+	            if (i < 0) i = ~i;
+	            if (i != piles.size())
+	                piles.get(i).push(x);
+	            else
+	                piles.add(newPile);
+	        }
+	        
+	        // priority queue allows us to retrieve least pile efficiently
+	        PriorityQueue<Pile<E>> heap = new PriorityQueue<Pile<E>>(piles);
+	        for (int c = 0; c < n.length; c++)
+	        {
+	            Pile<E> smallPile = heap.poll();
+	            n[c] = smallPile.pop();
+	            if (!smallPile.isEmpty())
+	                heap.offer(smallPile);
+	        }
+	        assert(heap.isEmpty());
+	    }
+	    
+	    private class Pile<E extends Comparable<? super E>> extends Stack<E> implements Comparable<Pile<E>>
+	    {
+	        /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public int compareTo(Pile<E> y) { return peek().compareTo(y.peek()); }
+	    }
 }
