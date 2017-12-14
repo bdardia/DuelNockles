@@ -16,19 +16,24 @@ import ui.Component;
 
 public abstract class Contestant extends Component implements Runnable{
 
-	int contestantNumber;
-	String title;
-	String status;
-	int currentTask;
-	int points;
-	double currentScore;
-	boolean wonLastRound;
-	int correctSorts;
-	int totalSorts;
-	int correctMedians;
-	int totalMedians;
-	long[][] recordedTimes;
-	double[] bestAverages;
+	private String string;
+	private int contestantNumber;
+	private String title;
+	private String status;
+	private int currentTask;
+	private int points;
+	private double currentScore;
+	private boolean wonLastRound;
+	private int correctSorts;
+	private int totalSorts;
+	private int correctMedians;
+	private int totalMedians;
+	private long[][] recordedTimes;
+	private double[] bestAverages;
+	private long currentTaskTime;
+	private boolean showTime;
+	private String recentError;
+	private long errorTime;
 
 	private boolean attacking;
 	private boolean hit;
@@ -58,11 +63,14 @@ public abstract class Contestant extends Component implements Runnable{
 	public static final String CAMMY = "resources/cammy-sprite-sheet.png";
 
 	public Contestant() {
-		super(0, 0, 410, 170);
+		super(0, 0, 310, 170);
+		this.string = this.getClass().toString().replaceAll("class sortomania.contestants.", "");
+		currentTaskTime = System.currentTimeMillis();
 		recordedTimes = new long[5][15];
 		bestAverages = new double[5];
-		currentScore = 50;
+		currentScore = 100;
 		wonLastRound = true;
+		showTime = false;
 		status = "";
 		frame = new ArrayList<BufferedImage>();
 		attackFrame = new ArrayList<BufferedImage>();
@@ -127,6 +135,11 @@ public abstract class Contestant extends Component implements Runnable{
 					0,131,63,77,3,
 					405,893,55,85,4};
 			values = temp;
+		}else if(spriteName.equals("resources/penguinmaple.png")) {
+			int[] temp = {0,0,118,76,8,
+					  0,161,126,84,4,
+					 0,449,174,98,2};
+			values = temp;
 		}
 		
 		try {
@@ -170,7 +183,7 @@ public abstract class Contestant extends Component implements Runnable{
 	}
 
 	public String toString(){
-		return title;
+		return string;
 	}
 
 	/**
@@ -210,8 +223,7 @@ public abstract class Contestant extends Component implements Runnable{
 
 	/**
 	 * TASK 5
-	 * sorts each array in a multi-dimensional array
-	 * then returns the median of the medians
+	 * TASK 2 (same directions)
 	 * @param random
 	 * @return
 	 */
@@ -230,20 +242,30 @@ public abstract class Contestant extends Component implements Runnable{
 		g.setStroke(new BasicStroke(2));
 		g.drawRect(5, 5, 35, 35);
 		g.setStroke(new BasicStroke(1));
-		g.drawString(title+": "+this+", Score: "+points, 45, 20);
+		String time = showTime ? ", Current Task: "+((int)(100*(System.currentTimeMillis()-currentTaskTime))/100000.0):"";
+				
+		g.drawString(string+", Score: "+points+time, 45, 20);
 		g.drawString(status, 45, 35);
-		if(currentScore <60){
+		if(currentScore <25){
 			g.setColor(Color.red);
-		}else if(currentScore < 70){
+		}else if(currentScore < 50){
 			g.setColor(Color.yellow);
-		}else if(currentScore < 80){
+		}else if(currentScore < 70){
 			g.setColor(new Color(190,255,200));
 		}else if(currentScore < 90){
-			g.setColor(new Color(148,255,231));
+			g.setColor(Color.green);
 		}else {
-			g.setColor(new Color(198,237,255));
+			g.setColor(Color.green);
 		}
 		g.fillRect(0, 45, (int)((currentScore/100.0)*(getWidth()-2)), 18);
+		
+		long timeSinceError = System.currentTimeMillis()-errorTime;
+		if(timeSinceError < 1000){
+			System.out.println("Drawing error text");
+			g.setColor(new Color(0,0,0,(int)(255.0*(1-timeSinceError/1000.0))));
+			g.drawString(recentError, 5, 58);
+		}
+		
 		g.setColor(Color.BLACK);
 		g.drawRect(0, 45, getWidth()-2, 18);
 		g.drawString("Correct Sorts: "+correctSorts+"/"+totalSorts, textMargin, topMargin+15);
@@ -353,13 +375,6 @@ public abstract class Contestant extends Component implements Runnable{
 			times = this.times;
 		}
 
-
-		if(currentFrame == attackFrame.size()-1){
-			frame = this.frame;
-			times = this.times;
-			currentFrame = frame.size() -1;
-			attacking = false;
-		}
 		
 		//finally after all adjustments have been made, make sure index is not out of bounds
 		if(currentFrame >= frame.size()){
@@ -389,17 +404,19 @@ public abstract class Contestant extends Component implements Runnable{
 	 * @param i
 	 */
 	public final void beginTask(int i) {
+		showTime = true;
 		currentTask = i;
-		status = "Task "+i+"... ";
+		currentTaskTime = System.currentTimeMillis();
+//		status = "Task "+i+"... ";
 	}
 
 	public final void successfulSort(boolean b, int trial) {
 		String report = (b)?"sorted "+trial+"! ":"failed "+trial+"! ";
-		status += report;
+		status = "Task "+currentTask+"... "+report;
 		totalSorts += 1;
 		if(b){
 			correctSorts+=1;
-			currentScore+=.1;
+//			currentScore+=.1;
 		}else{
 			currentScore-=.1;
 		}
@@ -426,6 +443,7 @@ public abstract class Contestant extends Component implements Runnable{
 
 	public final void markVictorious(boolean b) {
 		wonLastRound = b;
+		showTime = false;
 		String report = (b)?"Victory! ":"Defeat! ";
 		if (b){
 			points += 1;	
@@ -437,6 +455,8 @@ public abstract class Contestant extends Component implements Runnable{
 
 	public final void penalize(String string, int time) {
 		hit = true;
+		recentError = string;
+		errorTime = System.currentTimeMillis();
 		if(time > 0){
 			try {
 				Thread.sleep(time);
@@ -447,7 +467,7 @@ public abstract class Contestant extends Component implements Runnable{
 		}
 	}
 
-	public final int getScore() {
+	public final int getHP() {
 		return (int)(currentScore);
 	}
 
@@ -470,5 +490,42 @@ public abstract class Contestant extends Component implements Runnable{
 			bestAverages[test-1] = (int)(10000*(sum / (recordedTimes[test-1].length*1000000)))/10000.0;
 		}
 	}
+	
+	public double getScore(){
+		return correctSorts/(double)totalSorts;
+	}
+	
+	
+	public int getPoints(){
+		return points;
+	}
+	
+	
+	public final void damage(double d) {
+		currentScore -= d;
+		
+	}
+	
+	public final void setHP(double i) {
+		currentScore = i;
+	}
+
+	public int getCorrectSorts() {
+		return correctSorts;
+	}
+
+	public int getTotalSorts() {
+		return totalSorts;
+	}
+
+	public int getCorrectMedians() {
+		return correctMedians;
+	}
+
+	public int getTotalMedians() {
+		return totalMedians;
+	}
+
+	
 
 }
