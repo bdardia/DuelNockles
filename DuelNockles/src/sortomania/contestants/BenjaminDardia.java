@@ -3,6 +3,7 @@ package sortomania.contestants;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import sortomania.Contestant;
 
@@ -13,20 +14,20 @@ public class BenjaminDardia extends Contestant
     private ArrayList<Double>[] buckets = getBuckets();
     private final int CUTOFF =  15;   // cutoff to insertion sort
     private final int THRESHOLD = 16;
-
+    private final int RUN = 32;
 	
 	@Override
 	public Color getColor() 
 	{
 	return Color.BLACK;
 	}
-
+	
 	@Override
 	public String getSpriteName() 
 	{
 	return KEN;
 	}
-
+	
 	public double sortAndGetMedian(int[] random) 
 	{
 		int i, m = random[0], exp = 1, n = random.length;
@@ -123,26 +124,7 @@ public class BenjaminDardia extends Contestant
 	{
 	sortedGrid[i] = sortAndGetMedian(grid[i]);
 	}
-	for (long j = BIG_NUM; j >= 10; j = j / 10) {
-        for (int i = 0; i < sortedGrid.length; i++) {
-            int index = (int) ((sortedGrid[i] * j) % 10);
-            buckets[index].add(sortedGrid[i]);
-        }
-
-        /*
-        merges all the bucket's into the output array
-        and empty the buckets for reuse
-         */
-        for (int n = 0; n < sortedGrid.length; n++) {
-            for (int k = 0; k < buckets.length; k++) {
-                for (int h = 0; h < buckets[k].size(); h++) {
-                	sortedGrid[n] = buckets[k].get(h);
-                    n++;
-                }
-                buckets[k] = new ArrayList<>();
-            }
-            }
-        }
+	quickSortLR(sortedGrid, 0, sortedGrid.length - 1);
 	if (sortedGrid.length % 2 == 0) 
 	 	{
 	 	return ((double)(sortedGrid[sortedGrid.length / 2] + sortedGrid[(sortedGrid.length / 2) - 1]) / 2);
@@ -157,11 +139,7 @@ public class BenjaminDardia extends Contestant
 	@Override
 	public int sortAndSearch(Comparable[] arr, Comparable toFind) 
 	{
-		if (arr != null && arr.length > 1) {
-            int floor = (int) (Math.floor(Math.log(arr.length) / Math.log(2)));
-            innerLoop(0, arr.length, 2 * floor, arr);
-            insertionsort(0, arr.length, arr);
-        }
+		introSort(arr);
 	return binarySearch(arr, toFind);
 	}
 	
@@ -372,28 +350,21 @@ public class BenjaminDardia extends Contestant
 	        return mx;
 	    }
 
-	public <T extends Comparable<T>> int binarySearch(T[] items, T target, int first, int last){
-
-	    if(first > last)
-	        return -1; // Base case for unsuccessful search
-	    else{
-	        int middle = (first + last) / 2; // Next probe index.
-	        int compResult = target.compareTo(items[middle]);
-	        if(compResult == 0)
-	        {
-	        	return middle; // Base case for unsuccessful search.
-	        }
-	    
-	        else if (compResult <0)
-	            return binarySearch(items, target, first, middle -1);
-	        else
-	            return binarySearch(items, target, middle + 1, last);
+	 public <T extends Comparable<T>> int binarySearch(T[] arr, T key) 
+	    {
+	    	int low = 0;
+	    	int high = arr.length-1;
+	    	while(low < high)
+	    	{
+	    		int mid = low+(high-low)/2;
+	    		int comp = key.compareTo(arr[mid]);
+	    		if(comp <= 0)
+	    			high = mid;
+	    		else
+	    			low = mid+1;
+	    	}
+	    	return low;
 	    }
-	}
-
-	public <T extends Comparable<T>> int binarySearch(T[] items, T target){
-	    return binarySearch(items, target, 0, items.length -1);
-	}
 	
 	public int performBinarySearchIterative(String[] integerList,
 	      String noToSearch, int low, int high) {
@@ -410,7 +381,7 @@ public class BenjaminDardia extends Contestant
 	    return -1;
 	  }
 	
-	void insertsort(int arr[])
+	public void insertsort(int arr[])
     {
         int n = arr.length;
         for (int i=1; i<n; ++i)
@@ -469,6 +440,115 @@ public class BenjaminDardia extends Contestant
 	        return al;
 	    }
 	    
+	    public void dualPivot(Comparable[] a) {
+	    	dualPivot(a, 0, a.length - 1);
+	    }
+
+	    // quicksort the subarray a[lo .. hi] using dual-pivot quicksort
+	    private void dualPivot(Comparable[] a, int lo, int hi) { 
+	        if (hi <= lo) return;
+
+	        // make sure a[lo] <= a[hi]
+	        if (less(a[hi], a[lo])) exch(a, lo, hi);
+
+	        int lt = lo + 1, gt = hi - 1;
+	        int i = lo + 1;
+	        while (i <= gt) {
+	            if       (less(a[i], a[lo])) exch(a, lt++, i++);
+	            else if  (less(a[hi], a[i])) exch(a, i, gt--);
+	            else                         i++;
+	        }
+	        exch(a, lo, --lt);
+	        exch(a, hi, ++gt);
+
+	        // recursively sort three subarrays
+	        dualPivot(a, lo, lt-1);
+	        if (less(a[lt], a[gt])) dualPivot(a, lt+1, gt-1);
+	        dualPivot(a, gt+1, hi);
+
+	        assert isSorted(a, lo, hi);
+	    }
+
+
+
+	   /***************************************************************************
+	    *  Helper sorting functions.
+	    ***************************************************************************/
 	    
+	    // is v < w ?
+	    private boolean less(Comparable v, Comparable w) {
+	        return v.compareTo(w) < 0;
+	    }
+
+	    // exchange a[i] and a[j]
+	    private void exch(Object[] a, int i, int j) {
+	        Object swap = a[i];
+	        a[i] = a[j];
+	        a[j] = swap;
+	    }
+
+	   /***************************************************************************
+	    *  Check if array is sorted - useful for debugging.
+	    ***************************************************************************/
+	    private boolean isSorted(Comparable[] a) {
+	        return isSorted(a, 0, a.length - 1);
+	    }
+
+	    private boolean isSorted(Comparable[] a, int lo, int hi) {
+	        for (int i = lo + 1; i <= hi; i++)
+	            if (less(a[i], a[i-1])) return false;
+	        return true;
+	    }
+	    
+	    /****************************************
+	     * Normal quicksort for doubles
+	     * ***********************************************/
+	    
+	    int partition(double arr[], int low, int high)
+	    {
+	        double pivot = arr[high]; 
+	        int i = (low-1); // index of smaller element
+	        for (int j=low; j<high; j++)
+	        {
+	            // If current element is smaller than or
+	            // equal to pivot
+	            if (arr[j] <= pivot)
+	            {
+	                i++;
+	 
+	                // swap arr[i] and arr[j]
+	                double temp = arr[i];
+	                arr[i] = arr[j];
+	                arr[j] = temp;
+	            }
+	        }
+	 
+	        // swap arr[i+1] and arr[high] (or pivot)
+	        double temp = arr[i+1];
+	        arr[i+1] = arr[high];
+	        arr[high] = temp;
+	 
+	        return i+1;
+	    }
+	 
+	 
+	    /* The main function that implements QuickSort()
+	      arr[] --> Array to be sorted,
+	      low  --> Starting index,
+	      high  --> Ending index */
+	    void quickSortLR(double arr[], int low, int high)
+	    {
+	        if (low < high)
+	        {
+	            /* pi is partitioning index, arr[pi] is 
+	              now at right place */
+	            int pi = partition(arr, low, high);
+	 
+	            // Recursively sort elements before
+	            // partition and after partition
+	            quickSortLR(arr, low, pi-1);
+	            quickSortLR(arr, pi+1, high);
+	        }
+	    }
 	    
 }
