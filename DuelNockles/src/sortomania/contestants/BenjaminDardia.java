@@ -29,27 +29,28 @@ public class BenjaminDardia extends Contestant
 	
 	public double sortAndGetMedian(int[] random) 
 	{
-		int i, m = random[0], exp = 1, n = random.length;
-        int[] b = new int[n];
-        
-        for (i = 1; i < n; i++)
-            if (random[i] > m)
-                m = random[i];
-        
-        while (m / exp > 0)
-        {
-            int[] bucket = new int[10];
- 
-            for (i = 0; i < n; i++)
-                bucket[(random[i] / exp) % 10]++;
-            for (i = 1; i < 10; i++)
-                bucket[i] += bucket[i - 1];
-            for (i = n - 1; i >= 0; i--)
-                b[--bucket[(random[i] / exp) % 10]] = random[i];
-            for (i = 0; i < n; i++)
-            	random[i] = b[i];
-            exp *= 10;        
-        }
+//		int i, m = random[0], exp = 1, n = random.length;
+//        int[] b = new int[n];
+//        
+//        for (i = 1; i < n; i++)
+//            if (random[i] > m)
+//                m = random[i];
+//        
+//        while (m / exp > 0)
+//        {
+//            int[] bucket = new int[10];
+// 
+//            for (i = 0; i < n; i++)
+//                bucket[(random[i] / exp) % 10]++;
+//            for (i = 1; i < 10; i++)
+//                bucket[i] += bucket[i - 1];
+//            for (i = n - 1; i >= 0; i--)
+//                b[--bucket[(random[i] / exp) % 10]] = random[i];
+//            for (i = 0; i < n; i++)
+//            	random[i] = b[i];
+//            exp *= 10;        
+//        }
+		pigeonhole_sort(random, 9999);
 	if (random.length % 2 == 0) 
 	 	{
 	 	return ((double)(random[random.length / 2] + random[random.length / 2 - 1]) / 2);
@@ -653,35 +654,35 @@ public class BenjaminDardia extends Contestant
 	 
 	    }
 		
-		 public static void pigeonhole_sort(int arr[],
+		 public void pigeonhole_sort(int arr[],
                  int n)
-{
-int min = arr[0];
-int max = arr[0];
-int range, i, j, index; 
+		 {
+			 int min = arr[0];
+			 int max = arr[0];
+			 int range, i, j, index; 
 
-for(int a=0; a<n; a++)
-{
-if(arr[a] > max)
-max = arr[a];
-if(arr[a] < min)
-min = arr[a];
-}
+			 for(int a=0; a<n; a++)
+			 {
+				 if(arr[a] > max)
+					 max = arr[a];
+				 if(arr[a] < min)
+					 min = arr[a];
+			 }
 
-range = max - min + 1;
-int[] phole = new int[range];
-Arrays.fill(phole, 0);
+			 range = max - min + 1;
+			 int[] phole = new int[range];
+			 Arrays.fill(phole, 0);
 
-for(i = 0; i<n; i++)
-phole[arr[i] - min]++;
+			 for(i = 0; i<n; i++)
+				 phole[arr[i] - min]++;
 
 
-index = 0;
+			 index = 0;
 
-for(j = 0; j<range; j++)
-while(phole[j]-->0)
-arr[index++]=j+min;
+			 for(j = 0; j<range; j++)
+				 while(phole[j]-->0)
+					 arr[index++]=j+min;
 
-}
+		 }
 
 }
