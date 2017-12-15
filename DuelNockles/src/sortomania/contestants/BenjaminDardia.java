@@ -609,6 +609,7 @@ public class BenjaminDardia extends Contestant
 		        }
 		}
 		
+		@SuppressWarnings("unchecked")
 		private void mergePartsComp(int lowerIndex, int middle, int higherIndex) {
 	        for (int i = lowerIndex; i <= higherIndex; i++) {
 	            tempMergArrComp[i] = arrayComp[i];
