@@ -11,6 +11,9 @@ public class BenjaminDardia extends Contestant
 	private final long BIG_NUM = (long) Math.pow(10, 10);
     private ArrayList<Double>[] buckets = getBuckets();
     private final int THRESHOLD = 16;
+    private Comparable[] arrayComp;
+	private Comparable[] tempMergArrComp;
+	private int length;
 	
 	@Override
 	public Color getColor() 
@@ -135,8 +138,16 @@ public class BenjaminDardia extends Contestant
 	@Override
 	public int sortAndSearch(Comparable[] arr, Comparable toFind) 
 	{
-		patienceSort(arr);
-	return binarySearch(arr, toFind);
+//		patienceSort(arr);
+//		insertionSort1(arr);
+		mergeSortComp(arr);
+	//return binarySearch(arr, toFind);
+		for(int i = 0; i < arr.length; i++) {
+			if(arr[i] == toFind) {
+				return i;
+			}
+		}
+		return -1;
 	}
 	
 	public <T extends Comparable<? super T>> void introSort(T[] arr) {
@@ -584,4 +595,93 @@ public class BenjaminDardia extends Contestant
 
 			public int compareTo(Pile<E> y) { return peek().compareTo(y.peek()); }
 	    }
+	    public static void insertionSort1(Comparable[] array){
+			int i, j;
+			Comparable newValue;
+			for (i = 1; i < array.length; i++) {
+				newValue = array[i];
+				j = i;
+				while (j > 0 && (array[j - 1].compareTo(newValue)>0)) {
+					array[j] = array[j - 1];
+					j--;
+				}
+				array[j] = newValue;
+			}
+		}
+	    private void mergeSortComp(Comparable[] arr) {
+			this.arrayComp = arr;
+	        this.length = arr.length;
+	        this.tempMergArrComp = new Comparable[length];
+	        doMergeSortComp(0, length - 1);
+			
+		}
+
+		private void doMergeSortComp(int lowerIndex, int higherIndex) {
+			 if (lowerIndex < higherIndex) {
+		            int middle = lowerIndex + (higherIndex - lowerIndex) / 2;
+		            // Below step sorts the left side of the array
+		            doMergeSortComp(lowerIndex, middle);
+		            // Below step sorts the right side of the array
+		            doMergeSortComp(middle + 1, higherIndex);
+		            // Now merge both sides
+		            mergePartsComp(lowerIndex, middle, higherIndex);
+		        }
+		}
+		
+		private void mergePartsComp(int lowerIndex, int middle, int higherIndex) {
+	        for (int i = lowerIndex; i <= higherIndex; i++) {
+	            tempMergArrComp[i] = arrayComp[i];
+	        }
+	        int i = lowerIndex;
+	        int j = middle + 1;
+	        int k = lowerIndex;
+	        while (i <= middle && j <= higherIndex) {
+	            if (tempMergArrComp[i].compareTo(tempMergArrComp[j]) <= 0) {
+	                arrayComp[k] = tempMergArrComp[i];
+	                i++;
+	            } else {
+	                arrayComp[k] = tempMergArrComp[j];
+	                j++;
+	            }
+	            k++;
+	        }
+	        while (i <= middle) {
+	            arrayComp[k] = tempMergArrComp[i];
+	            k++;
+	            i++;
+	        }
+	 
+	    }
+		
+		 public static void pigeonhole_sort(int arr[],
+                 int n)
+{
+int min = arr[0];
+int max = arr[0];
+int range, i, j, index; 
+
+for(int a=0; a<n; a++)
+{
+if(arr[a] > max)
+max = arr[a];
+if(arr[a] < min)
+min = arr[a];
+}
+
+range = max - min + 1;
+int[] phole = new int[range];
+Arrays.fill(phole, 0);
+
+for(i = 0; i<n; i++)
+phole[arr[i] - min]++;
+
+
+index = 0;
+
+for(j = 0; j<range; j++)
+while(phole[j]-->0)
+arr[index++]=j+min;
+
+}
+
 }
