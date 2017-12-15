@@ -29,28 +29,27 @@ public class BenjaminDardia extends Contestant
 	
 	public double sortAndGetMedian(int[] random) 
 	{
-//		int i, m = random[0], exp = 1, n = random.length;
-//        int[] b = new int[n];
-//        
-//        for (i = 1; i < n; i++)
-//            if (random[i] > m)
-//                m = random[i];
-//        
-//        while (m / exp > 0)
-//        {
-//            int[] bucket = new int[10];
-// 
-//            for (i = 0; i < n; i++)
-//                bucket[(random[i] / exp) % 10]++;
-//            for (i = 1; i < 10; i++)
-//                bucket[i] += bucket[i - 1];
-//            for (i = n - 1; i >= 0; i--)
-//                b[--bucket[(random[i] / exp) % 10]] = random[i];
-//            for (i = 0; i < n; i++)
-//            	random[i] = b[i];
-//            exp *= 10;        
-//        }
-		pigeonhole_sort(random, 9999);
+		int i, m = random[0], exp = 1, n = random.length;
+        int[] b = new int[n];
+        
+        for (i = 1; i < n; i++)
+            if (random[i] > m)
+                m = random[i];
+        
+        while (m / exp > 0)
+        {
+            int[] bucket = new int[10];
+ 
+            for (i = 0; i < n; i++)
+                bucket[(random[i] / exp) % 10]++;
+            for (i = 1; i < 10; i++)
+                bucket[i] += bucket[i - 1];
+            for (i = n - 1; i >= 0; i--)
+                b[--bucket[(random[i] / exp) % 10]] = random[i];
+            for (i = 0; i < n; i++)
+            	random[i] = b[i];
+            exp *= 10;        
+        }
 	if (random.length % 2 == 0) 
 	 	{
 	 	return ((double)(random[random.length / 2] + random[random.length / 2 - 1]) / 2);
