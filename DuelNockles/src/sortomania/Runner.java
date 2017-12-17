@@ -56,10 +56,10 @@ public class Runner extends GUIApplication{
 		//PERIOD 4-5
 //		arr = addContestant(arr[0],arr[1],participants, new SamJenny());
 //		arr = addContestant(arr[0],arr[1],participants, new MimiJessiSort());
-//		arr = addContestant(arr[0],arr[1],participants, new AlexAndErik());
+		arr = addContestant(arr[0],arr[1],participants, new AlexAndErik());
 //		arr = addContestant(arr[0],arr[1],participants, new SidBen());
 //		arr = addContestant(arr[0],arr[1],participants, new TylerCarsonSort());
-//		arr = addContestant(arr[0],arr[1],participants, new YonathanDavid());
+		arr = addContestant(arr[0],arr[1],participants, new YonathanDavid());
 //		arr = addContestant(arr[0],arr[1],participants, new NabeelAmanatSort());
 //		arr = addContestant(arr[0],arr[1],participants, new JasonDavid());
 //		arr = addContestant(arr[0],arr[1],participants, new JaneVictorContestant());
@@ -67,25 +67,25 @@ public class Runner extends GUIApplication{
 //		arr = addContestant(arr[0],arr[1],participants, new DanSteven());
 //		arr = addContestant(arr[0],arr[1],participants, new GarrettRicky());
 //		arr = addContestant(arr[0],arr[1],participants, new AndrewKevin());
-//		arr = addContestant(arr[0],arr[1],participants, new FahadDavidSorter());
+		arr = addContestant(arr[0],arr[1],participants, new FahadDavidSorter());
 //		arr = addContestant(arr[0],arr[1],participants, new JustinSunny());
 		//ALL OF THE ABOVE STUDENTS SUBMITTED BY THE DEADLINE
 //		
 //		arr = addContestant(arr[0],arr[1],participants, new DerekDavid());//caught on task 2
-		arr = addContestant(arr[0],arr[1],participants, new DimitrisAlexakos());//errors in 3 and 4
+//		arr = addContestant(arr[0],arr[1],participants, new DimitrisAlexakos());//errors in 3 and 4
 		arr = addContestant(arr[0],arr[1],participants, new AliceDanielSort());//accurate but slow
 		arr = addContestant(arr[0],arr[1],participants, new JohnsonWeiContestant());
 //		arr = addContestant(arr[0],arr[1],participants, new JasTristan());//stuck in task 2
 		arr = addContestant(arr[0],arr[1],participants, new BenjaminDardia());//erros in task 4
 //		arr = addContestant(arr[0],arr[1],participants, new VincentNRaymond());//does not get through task 2
-		arr = addContestant(arr[0],arr[1],participants, new VickieAreej());
-		arr = addContestant(arr[0],arr[1],participants, new LordAchillesContestant());
-		arr = addContestant(arr[0],arr[1],participants, new DoubleJasons());
-		arr = addContestant(arr[0],arr[1],participants, new TheoDevinBeepBoop());
+//		arr = addContestant(arr[0],arr[1],participants, new VickieAreej());
+//		arr = addContestant(arr[0],arr[1],participants, new LordAchillesContestant());
+//		arr = addContestant(arr[0],arr[1],participants, new DoubleJasons());
+//		arr = addContestant(arr[0],arr[1],participants, new TheoDevinBeepBoop());
 		arr = addContestant(arr[0],arr[1],participants, new AbidAbedContestant());//fast but creates a recursive error somewhere
-		arr = addContestant(arr[0],arr[1],participants, new AnnieJoannaSort());
+//		arr = addContestant(arr[0],arr[1],participants, new AnnieJoannaSort());
 		arr = addContestant(arr[0],arr[1],participants, new MarkWilliam());
-		arr = addContestant(arr[0],arr[1],participants, new KevinStephContestant());
+//		arr = addContestant(arr[0],arr[1],participants, new KevinStephContestant());
 //		arr = addContestant(arr[0],arr[1],participants, new JessicaJi());//cannot complete task 4
 //		arr = addContestant(arr[0],arr[1],participants, new EthanDavidContestant());//gets stuck on task 2
 		//ALL OF THE ABOVE STUDENTS SUBMITTED 9-10 BY THE DEADLINE
